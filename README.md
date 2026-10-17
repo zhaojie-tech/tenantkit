@@ -192,7 +192,8 @@ To set expectations precisely, TenantKit explicitly does **not**:
   [信任模型/Trust model](docs/manual/trust-model.md) ·
   [快速上手/Quickstart](docs/manual/quickstart.md) ·
   [生产注意/Production notes](docs/manual/production-notes.md) ·
-  [MyBatis-Plus 共存](docs/manual/mybatis-plus.md) (`mkdocs.yml` serves the site)
+  [MyBatis-Plus 共存](docs/manual/mybatis-plus.md) ·
+  [Release guide](docs/manual/release-guide.md) (`mkdocs.yml` serves the site)
 - [Design document](docs/DESIGN.md) (v1.5, zh) — every `DESIGN §x` javadoc reference
 - [Boot 4.0↔4.1 checklist](docs/boot-compat-checklist.md) · [Benchmark report](docs/benchmarks.md) ·
   [ADRs](docs/adr/) · [Roadmap](docs/ROADMAP.md) · [Deferral ledger](docs/BACKLOG-0.1.1.md) ·
