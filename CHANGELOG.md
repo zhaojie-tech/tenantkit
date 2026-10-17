@@ -7,7 +7,7 @@ always come with migration notes.
 
 ## [Unreleased]
 
-## [0.1.0] — pending first release
+## [0.1.0] — 2026-10-17
 
 Initial release. Spring Boot matrix: **4.0.x + 4.1.x** (Java 17+).
 
@@ -70,11 +70,10 @@ Initial release. Spring Boot matrix: **4.0.x + 4.1.x** (Java 17+).
   compatibility checklist, benchmark report, Docker first-run playbook, Central
   release checklist.
 
-### Pending environment execution (not deferred work)
-- First real-container run of the slow suites (DLX round-trip positive and
-  negative, Redis isolation, MySQL GET_LOCK concurrency incl. the Hikari
-  variant). Tests are written; a Docker host is the missing piece. See
-  `docs/ops/docker-first-run.md`.
-- Maven Central publication (owner credentials: GitHub org / groupId / GPG /
-  Portal token). Pipeline and guards are in place; see
-  `docs/ops/central-release-checklist.md`.
+### Verified at release time (2026-10-17)
+- First real-container run of the slow suites on GitHub Actions: DLX round-trip
+  positive and negative, Redis isolation, MySQL GET_LOCK concurrency (incl. the
+  Hikari variant) — green on both Boot 4.0 and 4.1.
+- Published to Maven Central under `io.github.zhaojie-tech`; artifacts verified
+  on `repo1.maven.org` (jar / pom / .asc / sources / javadoc) and resolvable by
+  a fresh Maven repository.

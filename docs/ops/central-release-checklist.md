@@ -107,4 +107,5 @@ TODO 占位不写死；第 1–4 项全部完成前，M3 里程碑的「Central 
 - GPG：`rsa4096/B9EA34EA9DBBB29C`（指纹 `CDF658B7E5C112D65567BCBBB9EA34EA9DBBB29C`，有效期至 2028-10-16），公钥已发 `keyserver.ubuntu.com`。
 - 首次上传使用插件 0.7.0：上传成功（deployment `37d008a8-fad2-441a-9a3f-ba50e7d47059`，状态 VALIDATED），但插件解析新版 Portal 响应的 `warnings` 字段失败（客户端 bug）。**插件已升级 0.12.0**；该 deployment 通过 Portal 手动 Publish。
 - 凭据教训：`setup-java` 的 `server-username` 只是 settings.xml 里的变量名，**deploy 步骤必须显式注入 `CENTRAL_USERNAME`/`CENTRAL_PASSWORD` 环境变量**，否则 401。
+- 0.1.0 已于 2026-10-17 在 Portal 手动 Publish，`repo1.maven.org` 验收通过。
 - 发布后：轮换 Portal token（首次 token 曾出现在聊天记录中），更新 `CENTRAL_PASSWORD` secret。

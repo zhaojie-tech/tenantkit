@@ -2,9 +2,7 @@
 
 [![CI](https://github.com/zhaojie-tech/tenantkit/actions/workflows/ci.yml/badge.svg)](https://github.com/zhaojie-tech/tenantkit/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
-[![Maven Central (pending)](https://img.shields.io/badge/Maven%20Central-pending--0.1.0-orange.svg)](https://central.sonatype.com/)
-<!-- After the first Maven Central release, swap the pending badge for:
-     https://img.shields.io/maven-central/v/io.github.zhaojie-tech/tenantkit-spring-boot-starter -->
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.zhaojie-tech/tenantkit-spring-boot-starter)](https://central.sonatype.com/artifact/io.github.zhaojie-tech/tenantkit-spring-boot-starter)
 
 **TenantKit** is a batteries-included multi-tenancy toolkit for Spring Boot 4:
 request resolution → context propagation (HTTP / async / RabbitMQ) → Redis key
@@ -17,10 +15,9 @@ auto-configuration, so you don't hand-roll `TenantContextHolder` +
 | Java | 17+ |
 | Spring Boot | **4.0.x + 4.1.x** (v0.1 matrix) |
 | License | Apache-2.0 |
-| Status | v0.1.0 in development, targeting Maven Central |
+| Status | v0.1.0 released on Maven Central |
 
 > Maven coordinates: `io.github.zhaojie-tech` (GitHub-namespace route on Maven Central).
-> The badge switches from "pending" to the real Central badge after the first release.
 
 ## Why TenantKit
 
