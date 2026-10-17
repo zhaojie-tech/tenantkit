@@ -105,8 +105,7 @@
           <plugin>
             <groupId>org.sonatype.central</groupId>
             <artifactId>central-publishing-maven-plugin</artifactId>
-            <!-- TODO(TO-VERIFY at release time): bump to the latest plugin version before first upload -->
-            <version>0.7.0</version>
+            <version>0.12.0</version>
             <extensions>true</extensions>
             <configuration>
               <publishingServerId>central</publishingServerId>
