@@ -6,7 +6,7 @@
 
   <groupId>io.github.zhaojie-tech</groupId>
   <artifactId>tenantkit-parent</artifactId>
-  <version>0.1.0</version>
+  <version>0.1.1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>TenantKit (Parent)</name>
   <description>Spring Boot multi-tenancy kit: resolution, context propagation, RabbitMQ/Redis isolation, idempotent provisioning.</description>
@@ -111,8 +111,9 @@
               <publishingServerId>central</publishingServerId>
               <autoPublish>false</autoPublish>
               <waitUntil>validated</waitUntil>
+              <waitMaxTime>1800</waitMaxTime>
               <!-- the plugin ignores maven.deploy.skip (R4 publishing audit): exclude the
-                   demo application by artifactId or its 38MB fat jar lands on Central -->
+                   demo application and benchmarks by artifactId or they land on Central -->
               <excludeArtifacts>
                 <excludeArtifact>tenantkit-demo-app</excludeArtifact>
                 <excludeArtifact>tenantkit-benchmarks</excludeArtifact>

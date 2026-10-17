@@ -6,7 +6,7 @@
   <parent>
     <groupId>io.github.zhaojie-tech</groupId>
     <artifactId>tenantkit-parent</artifactId>
-    <version>0.1.0</version>
+    <version>0.1.1-SNAPSHOT</version>
   </parent>
 
   <artifactId>tenantkit-provisioning</artifactId>
