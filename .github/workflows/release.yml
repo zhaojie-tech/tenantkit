@@ -3,6 +3,7 @@ name: release
 on:
   push:
     tags: ['v*']
+  workflow_dispatch:
 
 jobs:
   publish-central:
@@ -49,6 +50,11 @@ jobs:
       - name: Publish to Maven Central (portal validation)
         env:
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+          # setup-java writes ${env.CENTRAL_USERNAME}/${env.CENTRAL_PASSWORD} into
+          # settings.xml; those variables must be present in THIS step's environment
+          # or the upload authenticates with empty credentials (401).
+          CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
+          CENTRAL_PASSWORD: ${{ secrets.CENTRAL_PASSWORD }}
         run: |
           ./mvnw --no-transfer-progress -Pboot40,release,central clean deploy \
             -DskipTests \
