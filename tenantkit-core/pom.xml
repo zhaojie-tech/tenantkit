@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>io.github.zhaojie-tech</groupId>
+    <artifactId>tenantkit-parent</artifactId>
+    <version>0.1.0</version>
+  </parent>
+
+  <artifactId>tenantkit-core</artifactId>
+  <name>TenantKit :: Core</name>
+  <description>TenantId, TenantContext, resolver SPI, TenantCatalog and Tenants.forEach. Pure library, zero auto-configuration.</description>
+
+  <properties>
+    <jacoco.line.min>0.90</jacoco.line.min>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <!-- TenantResolutionRequest's frozen signature (DESIGN §6.1) uses org.springframework.util.MultiValueMap. -->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-core</artifactId>
+    </dependency>
+    <!-- optional per DESIGN §5: forEach outer-transaction detection; absent => detection degrades off (matrix K02). -->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-tx</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <!-- optional per DESIGN §5/§6.3: context propagation; absent => manual decorator fallback (matrix K03/K04). -->
+    <dependency>
+      <groupId>io.micrometer</groupId>
+      <artifactId>context-propagation</artifactId>
+      <optional>true</optional>
+    </dependency>
+
+    <!-- logback (not slf4j-simple): its MDC adapter copies on thread creation, so a
+         worker's clear() cannot wipe the caller's map (InheritableThreadLocal in
+         slf4j-simple would break the clear-both tests). -->
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.tngtech.archunit</groupId>
+      <artifactId>archunit-junit5</artifactId>
+      <version>1.3.0</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>

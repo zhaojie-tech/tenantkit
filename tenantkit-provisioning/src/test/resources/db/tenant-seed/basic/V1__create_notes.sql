@@ -1,0 +1,5 @@
+CREATE TABLE IF NOT EXISTS tenant_notes (
+  id       BIGINT AUTO_INCREMENT PRIMARY KEY,
+  tenant_id VARCHAR(32) NOT NULL,
+  note      VARCHAR(64) NOT NULL
+);

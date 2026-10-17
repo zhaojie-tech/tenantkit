@@ -1,0 +1,55 @@
+{
+  "properties": [
+    {
+      "name": "tenantkit.messaging.enabled",
+      "type": "java.lang.Boolean",
+      "defaultValue": true,
+      "description": "Master switch of the messaging module; false exits the module's auto-configuration entirely while user beans stay untouched."
+    },
+    {
+      "name": "tenantkit.messaging.publisher-missing-context",
+      "type": "io.tenantkit.messaging.properties.TenantKitMessagingProperties$PublisherMissingContext",
+      "defaultValue": "skip-with-warn",
+      "description": "What a publisher does when no tenant is bound to the context (scheduled jobs, system messages). skip-with-warn logs a warning and sends without the header; fail aborts the send with TenantMessagingException TK-3001."
+    },
+    {
+      "name": "tenantkit.messaging.listener-missing-header",
+      "type": "io.tenantkit.messaging.properties.TenantKitMessagingProperties$ListenerMissingHeader",
+      "defaultValue": "reject-to-dlq",
+      "description": "What a listener does when an incoming message carries no tenant header. reject-to-dlq rejects without requeue so the broker dead-letters the message (prevents the poison nack/requeue loop); log-and-ack warns and processes without a tenant context."
+    },
+    {
+      "name": "tenantkit.messaging.raw-container-factories",
+      "type": "java.util.List<java.lang.String>",
+      "description": "Listener container factory bean names that must NOT receive the tenant advice (DLQ triage consumers). A headerless message already rejected once would otherwise be rejected again at the DLQ entrance and lost."
+    }
+  ],
+  "hints": [
+    {
+      "name": "tenantkit.messaging.publisher-missing-context",
+      "values": [
+        {
+          "value": "skip-with-warn",
+          "description": "Warn and send without the tenant header (default; tenant-less system messages are legitimate)."
+        },
+        {
+          "value": "fail",
+          "description": "Abort the send with TenantMessagingException TK-3001; for pipelines where an untenantable message is always a bug."
+        }
+      ]
+    },
+    {
+      "name": "tenantkit.messaging.listener-missing-header",
+      "values": [
+        {
+          "value": "reject-to-dlq",
+          "description": "Reject without requeue so the broker dead-letters the message for manual triage (default; keeps poison messages out of the nack/requeue loop)."
+        },
+        {
+          "value": "log-and-ack",
+          "description": "Warn and process the message without a tenant context."
+        }
+      ]
+    }
+  ]
+}

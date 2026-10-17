@@ -1,0 +1,76 @@
+{
+  "properties": [
+    {
+      "name": "tenantkit.web.enabled",
+      "type": "java.lang.Boolean",
+      "defaultValue": true,
+      "description": "Master switch of the web module; false exits the module's auto-configuration entirely while user beans stay untouched."
+    },
+    {
+      "name": "tenantkit.resolution.strategies",
+      "type": "java.util.List<io.tenantkit.web.properties.TenantKitResolutionProperties$Strategy>",
+      "description": "Ordered resolution chain (jwt-claim | header | subdomain | fixed); list order is priority order, the first non-empty result wins. Empty means the module resolves nothing."
+    },
+    {
+      "name": "tenantkit.resolution.fixed",
+      "type": "java.lang.String",
+      "description": "Fixed tenant value; required when strategies contains 'fixed'."
+    },
+    {
+      "name": "tenantkit.resolution.tenant-id-pattern",
+      "type": "java.lang.String",
+      "defaultValue": "[a-z0-9-]{1,32}",
+      "description": "TenantId validation regex. Relaxing the default charset re-opens an injection surface; read the provisioning chapter before widening it."
+    },
+    {
+      "name": "tenantkit.resolution.jwt-claim",
+      "type": "java.lang.String",
+      "defaultValue": "tenant_id",
+      "description": "Claim name read from the verified JWT (JwtAuthenticationToken only)."
+    },
+    {
+      "name": "tenantkit.resolution.header-name",
+      "type": "java.lang.String",
+      "defaultValue": "X-Tenant-Id",
+      "description": "Header inspected by the 'header' strategy."
+    },
+    {
+      "name": "tenantkit.resolution.trust-proxy",
+      "type": "java.lang.Boolean",
+      "defaultValue": false,
+      "description": "Whether a directly connected client may set the tenant header. Declaring 'header' with this false fails startup; true without the header strategy logs a warning."
+    },
+    {
+      "name": "tenantkit.resolution.subdomain.base-domains",
+      "type": "java.util.List<java.lang.String>",
+      "description": "Base domains for the 'subdomain' strategy, e.g. saas.example.com. Ports are rejected at startup as ambiguous; matching happens on the port-stripped hostname."
+    },
+    {
+      "name": "tenantkit.resolution.ignore-paths",
+      "type": "java.util.List<java.lang.String>",
+      "description": "Ant patterns short-circuited at filter level: no resolution, no failure. Takes precedence over @TenantPublic."
+    },
+    {
+      "name": "tenantkit.resolution.unknown-tenant-status",
+      "type": "java.lang.Integer",
+      "defaultValue": 404,
+      "description": "HTTP status for TK-1002 (unknown tenant). Consider 400 when clients cannot enumerate tenants safely."
+    },
+    {
+      "name": "tenantkit.tenants",
+      "type": "java.util.List<java.lang.String>",
+      "description": "Static tenant catalog. Omit it to plug a DB-backed TenantCatalog bean instead; the directory table itself must stay exempt from any row-level filter."
+    }
+  ],
+  "hints": [
+    {
+      "name": "tenantkit.resolution.strategies",
+      "values": [
+        { "value": "jwt-claim", "description": "Verified JWT claim from Spring Security authentication." },
+        { "value": "header", "description": "X-Tenant-Id header; requires trust-proxy=true." },
+        { "value": "subdomain", "description": "Sub-domain of a configured base domain." },
+        { "value": "fixed", "description": "Static value from tenantkit.resolution.fixed." }
+      ]
+    }
+  ]
+}

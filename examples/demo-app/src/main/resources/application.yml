@@ -1,0 +1,50 @@
+spring:
+  application:
+    name: tenantkit-demo
+  sql:
+    init:
+      mode: always
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/tenantkit?useSSL=false&allowPublicKeyRetrieval=true
+    username: ${MYSQL_USER:tenantkit}
+    password: ${MYSQL_PASSWORD:tenantkit}
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+  rabbitmq:
+    host: ${RABBIT_HOST:localhost}
+    port: ${RABBIT_PORT:5672}
+    username: ${RABBIT_USER:guest}
+    password: ${RABBIT_PASSWORD:guest}
+
+server:
+  port: 8080
+
+tenantkit:
+  resolution:
+    # demo trust model: fixed tenant for the live walkthrough; switch to
+    # [header] + trust-proxy=true behind a gateway that strips inbound X-Tenant-Id
+    strategies: [fixed]
+    fixed: alpha
+    ignore-paths: ["/actuator/**"]
+  tenants: [alpha, beta]
+  messaging:
+    publisher-missing-context: skip-with-warn
+    listener-missing-header: reject-to-dlq
+  redis:
+    key-prefix: true
+    shared-keys: ["shared:*"]
+    no-context-policy: strict
+  executor:
+    decorate-user-pools: true
+  provisioning:
+    enabled: true
+    seed-location: classpath:db/tenant-seed/
+    ledger-table: tenantkit_seed_history
+    lock-timeout-seconds: 30
+    dry-run: false
+
+logging:
+  pattern:
+    console: "%d{HH:mm:ss.SSS} %-5level [%X{tenantId:-}] %logger{20} - %msg%n"

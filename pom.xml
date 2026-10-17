@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>io.github.zhaojie-tech</groupId>
+  <artifactId>tenantkit-parent</artifactId>
+  <version>0.1.0</version>
+  <packaging>pom</packaging>
+  <name>TenantKit (Parent)</name>
+  <description>Spring Boot multi-tenancy kit: resolution, context propagation, RabbitMQ/Redis isolation, idempotent provisioning.</description>
+  <url>https://github.com/zhaojie-tech/tenantkit</url>
+
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+
+  <organization>
+    <name>Jie Zhao</name>
+    <url>https://github.com/zhaojie-tech</url>
+  </organization>
+
+  <developers>
+    <developer>
+      <id>zhaojie-tech</id>
+      <name>Jie Zhao</name>
+      <email>zhaojie-tech@users.noreply.github.com</email>
+      <url>https://github.com/zhaojie-tech</url>
+      <roles><role>maintainer</role></roles>
+    </developer>
+  </developers>
+
+  <scm>
+    <url>https://github.com/zhaojie-tech/tenantkit</url>
+    <connection>scm:git:https://github.com/zhaojie-tech/tenantkit.git</connection>
+    <developerConnection>scm:git:https://github.com/zhaojie-tech/tenantkit.git</developerConnection>
+  </scm>
+
+  <modules>
+    <module>tenantkit-core</module>
+    <module>tenantkit-web</module>
+    <module>tenantkit-test</module>
+    <module>tenantkit-spring-boot-starter</module>
+    <module>tenantkit-messaging</module>
+    <module>tenantkit-cache-redis</module>
+    <module>tenantkit-provisioning</module>
+    <module>examples/demo-app</module>
+    <module>tenantkit-benchmarks</module>
+  </modules>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <maven.compiler.release>17</maven.compiler.release>
+
+    <!-- Boot dual-version matrix (DESIGN §11: Maven profile switches boot.version; CI runs both jobs). -->
+    <boot.version>4.0.8</boot.version>
+    <testcontainers.version>1.21.4</testcontainers.version>
+
+    <skipTests>false</skipTests>
+    <surefire.groups></surefire.groups>
+    <surefire.excludedGroups>slow</surefire.excludedGroups>
+    <jacoco.line.min>0.85</jacoco.line.min>
+  </properties>
+
+  <profiles>
+    <profile>
+      <id>boot40</id>
+      <activation><activeByDefault>true</activeByDefault></activation>
+      <properties><boot.version>4.0.8</boot.version></properties>
+    </profile>
+    <profile>
+      <id>boot41</id>
+      <properties><boot.version>4.1.1</boot.version></properties>
+    </profile>
+    <!-- Run container (slow) tests: mvn verify -Pcontainers (requires Docker). -->
+    <profile>
+      <id>containers</id>
+      <properties>
+        <surefire.excludedGroups></surefire.excludedGroups>
+      </properties>
+    </profile>
+    <!-- Central Portal publishing (owner credentials required, see docs/ops/central-release-checklist.md).
+         First upload must pass the portal pre-publish validation (doclint etc.). -->
+    <profile>
+      <id>central</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>3.2.7</version>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <phase>verify</phase>
+                <goals><goal>sign</goal></goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.sonatype.central</groupId>
+            <artifactId>central-publishing-maven-plugin</artifactId>
+            <!-- TODO(TO-VERIFY at release time): bump to the latest plugin version before first upload -->
+            <version>0.7.0</version>
+            <extensions>true</extensions>
+            <configuration>
+              <publishingServerId>central</publishingServerId>
+              <autoPublish>false</autoPublish>
+              <waitUntil>validated</waitUntil>
+              <!-- the plugin ignores maven.deploy.skip (R4 publishing audit): exclude the
+                   demo application by artifactId or its 38MB fat jar lands on Central -->
+              <excludeArtifacts>
+                <excludeArtifact>tenantkit-demo-app</excludeArtifact>
+                <excludeArtifact>tenantkit-benchmarks</excludeArtifact>
+              </excludeArtifacts>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <!-- Release-ready packaging: sources + javadoc jars (module DoD, DESIGN §9). -->
+    <profile>
+      <id>release</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>attach-sources</id>
+                <goals><goal>jar-no-fork</goal></goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>attach-javadocs</id>
+                <goals><goal>jar</goal></goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
+  <dependencyManagement>
+    <dependencies>
+      <!-- imported BEFORE the Boot BOM: first declaration wins, and Boot 4 manages
+           testcontainers core 2.0.5 while our slow suites use the 1.21.x extensions —
+           a mixed core/extensions pair that has never run together must not happen -->
+      <dependency>
+        <groupId>org.testcontainers</groupId>
+        <artifactId>testcontainers-bom</artifactId>
+        <version>${testcontainers.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-dependencies</artifactId>
+        <version>${boot.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>io.github.zhaojie-tech</groupId>
+        <artifactId>tenantkit-core</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.github.zhaojie-tech</groupId>
+        <artifactId>tenantkit-web</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.github.zhaojie-tech</groupId>
+        <artifactId>tenantkit-test</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.github.zhaojie-tech</groupId>
+        <artifactId>tenantkit-messaging</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.github.zhaojie-tech</groupId>
+        <artifactId>tenantkit-cache-redis</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.github.zhaojie-tech</groupId>
+        <artifactId>tenantkit-provisioning</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>0.8.12</version>
+        <configuration>
+          <!-- -DskipTests must skip coverage as well; otherwise a stale jacoco.exec
+               from an earlier run is checked against freshly compiled classes -->
+          <skip>${skipTests}</skip>
+        </configuration>
+        <executions>
+          <execution>
+            <id>prepare-agent</id>
+            <goals><goal>prepare-agent</goal></goals>
+          </execution>
+          <execution>
+            <id>report</id>
+            <phase>verify</phase>
+            <goals><goal>report</goal></goals>
+          </execution>
+          <execution>
+            <id>check</id>
+            <phase>verify</phase>
+            <goals><goal>check</goal></goals>
+            <configuration>
+              <rules>
+                <rule>
+                  <element>BUNDLE</element>
+                  <limits>
+                    <limit>
+                      <counter>LINE</counter>
+                      <value>COVEREDRATIO</value>
+                      <minimum>${jacoco.line.min}</minimum>
+                    </limit>
+                  </limits>
+                </rule>
+              </rules>
+              <excludes>
+                <!-- Auto-configuration glue excluded from the coverage gate (DESIGN §8 gates core >=90% / all >=85% on testable units);
+                     per-module overrides live in each module POM where justified. -->
+                <exclude>**/io/tenantkit/**/*AutoConfiguration.*</exclude>
+              </excludes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.13.0</version>
+          <configuration>
+            <!-- keep parameter names: Spring MVC @RequestParam/@PathVariable binding
+                 without an explicit name needs them (BOM-based, not starter-parent) -->
+            <parameters>true</parameters>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>3.5.2</version>
+          <configuration>
+            <forkCount>1</forkCount>
+            <reuseForks>true</reuseForks>
+            <groups>${surefire.groups}</groups>
+            <excludedGroups>${surefire.excludedGroups}</excludedGroups>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>3.4.2</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>3.3.1</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>3.11.2</version>
+          <configuration>
+            <doclint>all,-missing</doclint>
+            <quiet>true</quiet>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+</project>

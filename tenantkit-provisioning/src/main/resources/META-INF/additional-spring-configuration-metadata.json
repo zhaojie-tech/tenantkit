@@ -1,0 +1,34 @@
+{
+  "properties": [
+    {
+      "name": "tenantkit.provisioning.enabled",
+      "type": "java.lang.Boolean",
+      "defaultValue": true,
+      "description": "Master switch of the provisioning module; false exits the module's auto-configuration entirely while user beans stay untouched."
+    },
+    {
+      "name": "tenantkit.provisioning.seed-location",
+      "type": "java.lang.String",
+      "defaultValue": "classpath:db/tenant-seed/",
+      "description": "Base location of seed scripts resolved via Spring resource patterns; one profile per sub-directory holding V<n>__description.sql files, executed in V-number order."
+    },
+    {
+      "name": "tenantkit.provisioning.ledger-table",
+      "type": "java.lang.String",
+      "defaultValue": "tenantkit_seed_history",
+      "description": "Seed ledger table (global table - keep it in any future row-level filter's exemption list). Created by the application's own migration, never by TenantKit; a missing table logs a WARN at startup and fails provisioning with TK-2004."
+    },
+    {
+      "name": "tenantkit.provisioning.lock-timeout-seconds",
+      "type": "java.lang.Integer",
+      "defaultValue": 30,
+      "description": "How long the tenant provisioning advisory lock (MySQL GET_LOCK on a dedicated connection, ADR-0001) blocks before the run fails with TK-2002. The lock is always released in a finally block, including on script failure. Keep this finite; negative values would wait forever."
+    },
+    {
+      "name": "tenantkit.provisioning.dry-run",
+      "type": "java.lang.Boolean",
+      "defaultValue": false,
+      "description": "Audit-only mode: parse seed scripts, replace ${tenantId} placeholders and log what would run; no SQL executes and the ledger stays untouched. Overridable per call via ProvisionOptions.dryRun()."
+    }
+  ]
+}

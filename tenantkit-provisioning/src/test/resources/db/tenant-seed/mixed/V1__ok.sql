@@ -1,0 +1,1 @@
+CREATE TABLE IF NOT EXISTS mixed_tiny (id INT NOT NULL);

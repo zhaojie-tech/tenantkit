@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>io.github.zhaojie-tech</groupId>
+    <artifactId>tenantkit-parent</artifactId>
+    <version>0.1.0</version>
+  </parent>
+
+  <artifactId>tenantkit-test</artifactId>
+  <name>TenantKit :: Test</name>
+  <description>Testcontainers factories (singleton containers) and multi-tenant isolation assertion helpers for user and demo tests.</description>
+
+  <properties>
+    <!-- No bundle-level coverage gate for this toolkit module, in EITHER layer: its classes
+         (HidingClassLoader, MultiTenantAssert, TenantSupport) are consumed by OTHER modules'
+         tests, so per-bundle ratios are structurally unreachable (R1 audit P0-2: measured
+         0.23 fast / ~0.5 with slow). Coverage evidence lives in the consuming modules' reports;
+         see docs/BACKLOG-0.1.1.md #7. -->
+    <jacoco.line.min>0.0</jacoco.line.min>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>io.github.zhaojie-tech</groupId>
+      <artifactId>tenantkit-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>testcontainers</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>mysql</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>rabbitmq</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>

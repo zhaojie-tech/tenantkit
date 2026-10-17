@@ -1,0 +1,25 @@
+site_name: TenantKit
+site_description: Spring Boot multi-tenancy kit — resolution, propagation, Redis isolation, idempotent provisioning
+repo_url: https://github.com/zhaojie-tech/tenantkit
+docs_dir: docs/manual
+nav:
+  - 概念 / Concepts: index.md
+  - 信任模型 / Trust model: trust-model.md
+  - 快速上手 / Quickstart: quickstart.md
+  - 生产注意 / Production notes: production-notes.md
+  - MyBatis-Plus 共存: mybatis-plus.md
+  - English:
+    - Concepts: en/index.md
+    - Trust model: en/trust-model.md
+    - Quickstart: en/quickstart.md
+    - Production notes: en/production-notes.md
+    - MyBatis-Plus coexistence: en/mybatis-plus.md
+theme:
+  name: material
+  language: zh
+  palette:
+    primary: indigo
+markdown_extensions:
+  - admonition
+  - pymdownx.highlight
+  - pymdownx.superfences

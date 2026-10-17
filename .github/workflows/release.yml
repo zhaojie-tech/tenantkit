@@ -1,0 +1,55 @@
+name: release
+
+on:
+  push:
+    tags: ['v*']
+
+jobs:
+  publish-central:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17 + Central credentials
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+          # central-publishing-maven-plugin reads credentials ONLY from
+          # settings.xml <server id="central">; setup-java writes exactly that
+          # block from these env-backed secrets (R4 publishing audit P0).
+          server-id: central
+          server-username: CENTRAL_USERNAME
+          server-password: CENTRAL_PASSWORD
+
+      - name: Import GPG key and verify it is usable
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+        run: |
+          echo "$GPG_PRIVATE_KEY" | gpg --batch --import
+          gpg --list-secret-keys --keyid-format long
+
+      - name: Guard — releases must not be SNAPSHOT versions
+        run: |
+          if grep -rn "<version>.*-SNAPSHOT</version>" pom.xml | grep -v "<parent>" | grep -q .; then
+            echo "::error::pom.xml still declares a SNAPSHOT version. The Central plugin would"
+            echo "::error::silently upload to the snapshots repository and publish nothing."
+            echo "::error::Run: ./mvnw versions:set -DnewVersion=<release> -DgenerateBackupPoms=false"
+            exit 1
+          fi
+
+      - name: Tests must pass before publish (DESIGN §9 gate, full slow layer)
+        run: ./mvnw --no-transfer-progress verify -Pboot40 -Pcontainers
+
+      - name: Verify second matrix leg (full gate, containers too)
+        run: ./mvnw --no-transfer-progress verify -Pboot41 -Pcontainers
+
+      - name: Publish to Maven Central (portal validation)
+        env:
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+        run: |
+          ./mvnw --no-transfer-progress -Pboot40,release,central clean deploy \
+            -DskipTests \
+            -Dgpg.passphraseEnvName=GPG_PASSPHRASE

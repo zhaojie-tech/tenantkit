@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>io.github.zhaojie-tech</groupId>
+    <artifactId>tenantkit-parent</artifactId>
+    <version>0.1.0</version>
+  </parent>
+
+  <artifactId>tenantkit-benchmarks</artifactId>
+  <name>TenantKit :: Benchmarks</name>
+  <description>Standalone micro-benchmark runner (not published): key codec, resolution filter, MQ advice overhead.</description>
+
+  <properties>
+    <jacoco.line.min>0.0</jacoco.line.min>
+    <maven.deploy.skip>true</maven.deploy.skip>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>io.github.zhaojie-tech</groupId>
+      <artifactId>tenantkit-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.github.zhaojie-tech</groupId>
+      <artifactId>tenantkit-web</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.github.zhaojie-tech</groupId>
+      <artifactId>tenantkit-messaging</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.github.zhaojie-tech</groupId>
+      <artifactId>tenantkit-cache-redis</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-test</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.servlet</groupId>
+      <artifactId>jakarta.servlet-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-aop</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.amqp</groupId>
+      <artifactId>spring-rabbit</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.data</groupId>
+      <artifactId>spring-data-redis</artifactId>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>3.5.0</version>
+        <configuration>
+          <mainClass>io.tenantkit.benchmarks.BenchmarkMain</mainClass>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

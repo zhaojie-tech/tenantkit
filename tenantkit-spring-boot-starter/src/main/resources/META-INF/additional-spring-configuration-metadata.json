@@ -1,0 +1,10 @@
+{
+  "properties": [
+    {
+      "name": "tenantkit.executor.decorate-user-pools",
+      "type": "java.lang.Boolean",
+      "defaultValue": false,
+      "description": "Wrap every Spring-managed ThreadPoolTaskExecutor/SimpleAsyncTaskExecutor with the tenant decorator, not only applicationTaskExecutor. Raw ExecutorService beans and ForkJoinPool.commonPool are never covered; use TenantExecutors.wrap."
+    }
+  ]
+}

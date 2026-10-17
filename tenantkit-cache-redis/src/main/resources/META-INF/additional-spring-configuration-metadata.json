@@ -1,0 +1,36 @@
+{
+  "properties": [
+    {
+      "name": "tenantkit.redis.enabled",
+      "type": "java.lang.Boolean",
+      "defaultValue": true,
+      "description": "Master switch of the cache-redis module; false exits the module's auto-configuration entirely while user beans stay untouched."
+    },
+    {
+      "name": "tenantkit.redis.key-prefix",
+      "type": "java.lang.Boolean",
+      "defaultValue": true,
+      "description": "Whether tenantRedisTemplate rewrites keys to t:<tenant>:. false degrades the template to a transparent delegate: no rewriting, no stripping, no no-context policy (documented opt-out for shared-infrastructure jobs)."
+    },
+    {
+      "name": "tenantkit.redis.shared-keys",
+      "type": "java.util.List<java.lang.String>",
+      "description": "Ant-style glob allow-list of keys that are never prefixed and never stripped (cross-tenant shared data, e.g. app:*). Shared keys are also the only keys reachable without a bound tenant while the policy is strict."
+    },
+    {
+      "name": "tenantkit.redis.no-context-policy",
+      "type": "io.tenantkit.cache.redis.properties.TenantKitRedisProperties$NoContextPolicy",
+      "defaultValue": "strict",
+      "description": "Behavior for non-shared key access with no tenant bound: strict throws TenantMissingException (TK-1001, fail-fast default); lenient passes the key through unprefixed and logs a warning. Startup cache-prefix computation is always lenient regardless of this value."
+    }
+  ],
+  "hints": [
+    {
+      "name": "tenantkit.redis.no-context-policy",
+      "values": [
+        { "value": "strict", "description": "Throw TenantMissingException (TK-1001) on non-shared key access without a bound tenant." },
+        { "value": "lenient", "description": "Access the unprefixed key and log a warning; for scheduled/shared-infrastructure jobs." }
+      ]
+    }
+  ]
+}

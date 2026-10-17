@@ -1,0 +1,18 @@
+# build
+target/
+*.class
+*.jar
+!/.github/workflows/*.yml
+# ide
+.idea/
+*.iml
+.vscode/
+!.editorconfig
+# os
+.DS_Store
+# logs
+*.log
+# local
+.flattened-pom.xml
+.tool-versions
+.env

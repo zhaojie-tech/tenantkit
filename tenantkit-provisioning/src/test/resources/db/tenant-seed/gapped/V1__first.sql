@@ -1,0 +1,1 @@
+CREATE TABLE IF NOT EXISTS gapped_tiny (id INT NOT NULL);

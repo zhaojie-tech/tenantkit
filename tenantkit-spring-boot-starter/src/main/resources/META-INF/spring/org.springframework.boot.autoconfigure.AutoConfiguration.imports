@@ -1,0 +1,2 @@
+io.tenantkit.starter.TenantKitExecutorAutoConfiguration
+io.tenantkit.starter.TenantKitAmbientAutoConfiguration
