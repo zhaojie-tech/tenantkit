@@ -21,12 +21,12 @@
 | 11 | Hikari 代理连接锁变体 | 见 #2；`lockIsSessionBoundThroughAHikariPool` 断言池化下锁仍为会话绑定 |
 | 12 | 首跑手册 | `docs/ops/docker-first-run.md`（预热/单类点灯/全量/逐症状排查/收尾） |
 
-## 待环境执行（非延期）
+## 已执行（原待环境项）
 
-| 项 | 为什么不能在这里做 | 执行方式 |
-|---|---|---|
-| slow 层首次真跑 | 本机无 Docker（二进制缺失、无 sudo） | `./mvnw verify -Pboot40 -Pcontainers`，按 `docs/ops/docker-first-run.md` |
-| Maven Central 首发 | 需要用户的 GitHub org / groupId / GPG / Portal token | `docs/ops/central-release-checklist.md` + `.github/workflows/release.yml`（凭据、SNAPSHOT 护栏、demo 排除均已就绪） |
+| 项 | 结果 |
+|---|---|
+| slow 层首次真跑 | 2026-10-17 在 GitHub Actions `-Pcontainers` 双版跑绿 |
+| Maven Central 首发 | 2026-10-17 `0.1.0` 已 PUBLISHED；记录见 `docs/ops/central-release-checklist.md` |
 
 ## 按 DESIGN §11 仍属 v0.1.x/v1.x 路线图（非挂账）
 

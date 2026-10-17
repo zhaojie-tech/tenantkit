@@ -7,8 +7,8 @@
 | 里程碑 | 状态 | 备注 |
 |---|---|---|
 | M1 | **完成** | 双版全绿；矩阵 51 条冻结并全实现 |
-| M2 | **完成（本机可验证部分全绿）** | messaging（fast 38 双版绿/99.1%）+ cache-redis（fast 52 双版绿/98.4%）+ 异步透传 + 差异核对表；DLX 正反例 slow 用例已写待容器 |
-| M3 | **代码与文档全部落地，Central 真发版待用户凭据** | provisioning（fast 62 绿/96.0%）+ MultiTenantAssert + demo-app + MkDocs 三页 + release.yml/central profile；门户预发布校验已过 doclint |
+| M2 | **完成** | messaging + cache-redis + 异步透传 + 差异核对表；DLX 正反例 slow 用例已在 GitHub Actions 容器层跑绿 |
+| M3 | **完成（2026-10-17 首发）** | provisioning + MultiTenantAssert + demo-app + MkDocs + release.yml/central profile；0.1.0 已发布于 Maven Central，GitHub Release `v0.1.0` 已创建 |
 
 ## M1 交付记录（2026-10-15）
 

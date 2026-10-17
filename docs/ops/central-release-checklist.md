@@ -1,5 +1,8 @@
 # Maven Central 首发外部前置待办清单
 
+> 状态更新（2026-10-17）：`0.1.0` 已发布，最新记录见文末；第 2–5 节保留为
+> 首次发布前的历史清单，不再代表当前阻塞状态。
+>
 > 本文是**给仓库所有者的外部前置待办清单**——下列事项必须由所有者亲自办理
 > （涉及个人/组织账号与密钥，只能由账号持有人办理）。每项标注 `[待用户办理]`，
 > 文末汇总当前阻塞状态。
@@ -10,23 +13,25 @@
 - Maven `groupId`：`io.github.zhaojie-tech`（Central 的 GitHub namespace 路线）。
 - README 徽章、SECURITY advisories、issue 模板、文档站与 `scm` 已全部指向该仓库；
   错误类型 URI 改用 `urn:tenantkit:errors:`（不依赖域名）。
-- 遗留动作：首次 push 前在 GitHub 建仓（私有）；Central namespace 验证见第 2 项。
+- 仓库已公开为 `zhaojie-tech/tenantkit`，首次 push 已完成；Central namespace 验证见第 2 项。
 
-## 2. Maven Central 门户账号注册与 namespace 验证 [待用户办理]
+## 2. Maven Central 门户账号注册与 namespace 验证 [已完成 2026-10-17]
 
 1. 注册 [central.sonatype.com](https://central.sonatype.com)（Central Portal）账号。
 2. 生成并验证发布 namespace（= groupId）：
-   - **GitHub namespace 路线**（`io.github.<username>`）：用 GitHub 账号登录
-     Portal → 创建 namespace → 按 Portal 页面指引在 GitHub 新建指定名称的公开
-     验证仓库（Portal 生成验证码/仓库名）→ 回 Portal 点击 Verify → 通过后验证
-     仓库可删除；
+   - **GitHub 用户名路线**（`io.github.<username>`）：用 GitHub 账号登录 Portal 后
+     **自动验证**，不需要手工建仓库；
+   - **GitHub 组织名**：`io.github.<organization>` 不是自动注册的 namespace；
+     组织项目应改用自有域名 DNS TXT 验证，或联系 Central Support；
+   - **手动 code hosting 路线**（GitLab/Gitee/Bitbucket 等）：Portal 会要求创建
+     指定名称的临时公开仓库，验证后可删；
    - **自有域名路线**（如 `io.tenantkit`）：需证明域名控制权——按 Portal 提示在
      域名 DNS 添加指定 TXT 记录，然后点击 Verify。
 3. 验证通过后该 groupId 才可用于发布；否则 `central-publishing` 插件上传时会报
    namespace 未授权。
-- **当前阻塞状态：未注册、未验证。** groupId 最终形态依赖第 1 项结论。
+- **当时状态（历史）：未注册、未验证；2026-10-17 已完成。** groupId 最终形态依赖第 1 项结论。
 
-## 3. GPG 密钥生成与公钥分发 [待用户办理]
+## 3. GPG 密钥生成与公钥分发 [已完成 2026-10-17]
 
 Central 要求全部 artifact 带 PGP 签名，且签名公钥可在公共 keyserver 检索：
 
@@ -46,12 +51,12 @@ gpg --keyserver keys.openpgp.org --send-keys <FINGERPRINT>
 
 - **私钥与口令务必妥善备份**（`gpg --armor --export-secret-keys <FINGERPRINT>`
   导出后存入密码管理器/离线介质）；口令不得写入仓库，不得以明文进入任何脚本。
-- **指纹记录**：`<FINGERPRINT>` = [TO-CONFIRM by owner]（生成后回填本清单）。
+- **指纹记录**：`CDF658B7E5C112D65567BCBBB9EA34EA9DBBB29C`（2026-10-17 生成）。
 - 有效期建议设长或不过期，并记录到期日。
 
-- **当前阻塞状态：未生成、未分发。** 第 4 项的两个 secrets 依赖本步。
+- **当时状态（历史）：未生成、未分发；2026-10-17 已完成。** 第 4 项的两个 secrets 依赖本步。
 
-## 4. Central Portal User Token 与 GitHub Actions secrets 配置 [待用户办理]
+## 4. Central Portal User Token 与 GitHub Actions secrets 配置 [已完成 2026-10-17]
 
 1. 在 Central Portal → 账户页生成 **User Token**（形如一对 username/password，
    与网页登录凭据不同，专供发布流程使用）。
@@ -66,10 +71,10 @@ gpg --keyserver keys.openpgp.org --send-keys <FINGERPRINT>
 
 3. 最小权限与轮换：Token 仅用于发布流程；一旦泄露立即在 Portal 撤销重发，并同步
    更新 secrets。
-- **当前阻塞状态：未配置**（依赖第 2、3 项）。`release.yml` 的发布 job 在 secrets
+- **当时状态（历史）：未配置（依赖第 2、3 项）；2026-10-17 已完成。** `release.yml` 的发布 job 在 secrets
   就位前不可触发。
 
-## 5. 首次发布前 publish 前校验 [待用户办理 · 与代码侧配合]
+## 5. 首次发布前 publish 前校验 [已完成 2026-10-17]
 
 secrets 就位后、首次执行 `central-publishing-maven-plugin` 的 `publish` 之前，
 跑一次完整门户预发布校验（doclint 首跑常翻车，务必留出返工时间）：
@@ -85,20 +90,19 @@ secrets 就位后、首次执行 `central-publishing-maven-plugin` 的 `publish`
 - [ ] 首发版本 `0.1.0`；此后遵循语义化版本，配置键变更属 breaking，记 CHANGELOG
       并附迁移说明。
 
-- **当前阻塞状态：未开始**（依赖第 1–4 项全部完成）。
+- **当时状态（历史）：未开始（依赖第 1–4 项全部完成）；2026-10-17 已完成。**
 
-## 阻塞状态汇总（截至 2026-10-15）
+## 阻塞状态汇总（截至 2026-10-15；2026-10-17 已全部完成）
 
 | # | 事项 | 状态 |
 |---|---|---|
-| 1 | GitHub org / groupId 确认 | 待用户办理（阻塞以下全部） |
-| 2 | Central Portal 账号 + namespace 验证 | 待用户办理 |
-| 3 | GPG 密钥生成与分发 | 待用户办理 |
-| 4 | User Token + Actions secrets | 待用户办理 |
-| 5 | publish 前校验 | 待用户办理（依赖 1–4） |
+| 1 | GitHub org / groupId 确认 | 已完成（2026-10-17） |
+| 2 | Central Portal 账号 + namespace 验证 | 已完成（2026-10-17） |
+| 3 | GPG 密钥生成与分发 | 已完成（2026-10-17） |
+| 4 | User Token + Actions secrets | 已完成（2026-10-17） |
+| 5 | publish 前校验 | 已完成（2026-10-17） |
 
-**当前总阻塞状态**：第 1 项未决前，README / SECURITY.md 中的组织名与 groupId 保持
-TODO 占位不写死；第 1–4 项全部完成前，M3 里程碑的「Central 首发」处于阻塞状态。
+**当前总阻塞状态**：无。0.1.0 已发布；后续发布流程由维护者按内部发布指南执行。
 
 
 ## 0.1.0 首次发布记录（2026-10-17）
@@ -108,4 +112,5 @@ TODO 占位不写死；第 1–4 项全部完成前，M3 里程碑的「Central 
 - 首次上传使用插件 0.7.0：上传成功（deployment `37d008a8-fad2-441a-9a3f-ba50e7d47059`，状态 VALIDATED），但插件解析新版 Portal 响应的 `warnings` 字段失败（客户端 bug）。**插件已升级 0.12.0**；该 deployment 通过 Portal 手动 Publish。
 - 凭据教训：`setup-java` 的 `server-username` 只是 settings.xml 里的变量名，**deploy 步骤必须显式注入 `CENTRAL_USERNAME`/`CENTRAL_PASSWORD` 环境变量**，否则 401。
 - 0.1.0 已于 2026-10-17 在 Portal 手动 Publish，`repo1.maven.org` 验收通过。
-- 发布后：轮换 Portal token（首次 token 曾出现在聊天记录中），更新 `CENTRAL_PASSWORD` secret。
+- tag：`v0.1.0` 在发布前因 `release.yml` 凭据修复重建过一次（`7930fba` → `19a10a2`），最终为 lightweight tag；后续版本使用 annotated tag，发布后不再移动。
+- 发布后：如 token 曾暴露于任何日志/聊天，先在 Portal 撤销旧 token，再生成新 token 并更新 `CENTRAL_PASSWORD` secret。

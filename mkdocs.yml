@@ -8,7 +8,6 @@ nav:
   - 快速上手 / Quickstart: quickstart.md
   - 生产注意 / Production notes: production-notes.md
   - MyBatis-Plus 共存: mybatis-plus.md
-  - 发布指南: release-guide.md
   - English:
     - Concepts: en/index.md
     - Trust model: en/trust-model.md
