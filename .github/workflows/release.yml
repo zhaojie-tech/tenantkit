@@ -5,15 +5,21 @@ on:
     tags: ['v*']
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   publish-central:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 90
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
 
       - name: Set up JDK 17 + Central credentials
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@cf277c60eb25467037889841efdb72551f06f6c3 # v4
         with:
           distribution: temurin
           java-version: '17'
@@ -25,7 +31,24 @@ jobs:
           server-username: CENTRAL_USERNAME
           server-password: CENTRAL_PASSWORD
 
-      - name: Import GPG key and verify it is usable
+      - name: Guard — release tag must match the project version
+        run: |
+          version=$(./mvnw -q help:evaluate -Dexpression=project.version -DforceStdout)
+          if [ "${GITHUB_REF_TYPE}" != "tag" ]; then
+            echo "::error::release workflow must run from a tag ref; got ${GITHUB_REF_TYPE}"
+            exit 1
+          fi
+          if [ "${GITHUB_REF_NAME}" != "v${version}" ]; then
+            echo "::error::tag ${GITHUB_REF_NAME} does not match project version ${version}"
+            exit 1
+          fi
+          git fetch origin main
+          if ! git merge-base --is-ancestor "$(git rev-parse HEAD)" origin/main; then
+            echo "::error::tag commit is not on main"
+            exit 1
+          fi
+
+      - name: Import GPG key
         env:
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
         run: |
@@ -34,9 +57,10 @@ jobs:
 
       - name: Guard — releases must not be SNAPSHOT versions
         run: |
-          if grep -rn "<version>.*-SNAPSHOT</version>" pom.xml | grep -v "<parent>" | grep -q .; then
-            echo "::error::pom.xml still declares a SNAPSHOT version. The Central plugin would"
-            echo "::error::silently upload to the snapshots repository and publish nothing."
+          if grep -rn --include=pom.xml --exclude-dir=target \
+               -E '<version>[^<]*-SNAPSHOT</version>' .; then
+            echo "::error::A pom.xml still declares a SNAPSHOT version. The Central plugin"
+            echo "::error::would upload to the snapshots repository and publish nothing."
             echo "::error::Run: ./mvnw versions:set -DnewVersion=<release> -DgenerateBackupPoms=false"
             exit 1
           fi
@@ -44,7 +68,7 @@ jobs:
       - name: Tests must pass before publish (DESIGN §9 gate, full slow layer)
         run: ./mvnw --no-transfer-progress verify -Pboot40 -Pcontainers
 
-      - name: Verify second matrix leg (full gate, containers too)
+      - name: Verify second boot version (full gate, containers too)
         run: ./mvnw --no-transfer-progress verify -Pboot41 -Pcontainers
 
       - name: Publish to Maven Central (portal validation)
@@ -52,7 +76,7 @@ jobs:
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
           # setup-java writes ${env.CENTRAL_USERNAME}/${env.CENTRAL_PASSWORD} into
           # settings.xml; those variables must be present in THIS step's environment
-          # or the upload authenticates with empty credentials (401).
+          # or Maven sends the unresolved ${env...} literal as credentials (401).
           CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
           CENTRAL_PASSWORD: ${{ secrets.CENTRAL_PASSWORD }}
         run: |

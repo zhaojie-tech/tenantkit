@@ -16,3 +16,5 @@ target/
 .flattened-pom.xml
 .tool-versions
 .env
+# secrets / local signing material
+private*.asc
